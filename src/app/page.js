@@ -13,34 +13,39 @@ export default function Home() {
     30000: 0.20,
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
-
-  if (!name || !tier) {
-    alert('Please fill in all fields.');
-    return;
-  }
-
-  // Validate the selected tier
-  const validTiers = [10000, 20000, 30000];
-  if (!validTiers.includes(parseInt(tier))) {
-    alert('Invalid tier amount. Please select a valid tier.');
-    return;
-  }
-
-  const weeklyInterest = tier * tierInterestRates[tier];
-  const totalWithdrawal = parseFloat(tier) + weeklyInterest;
-
-  const newStudent = {
-    name,
-    tier: parseInt(tier),
-    weeklyInterest: weeklyInterest.toFixed(2),
-    totalWithdrawal: totalWithdrawal.toFixed(2),
+  const handleWithdraw = (index) => {
+    const updatedStudents = students.filter((_, i) => i !== index);
+    setStudents(updatedStudents);
   };
 
-  setStudents([...students, newStudent]);
-  setName('');
-  setTier('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!name || !tier) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    // Validate the selected tier
+    const validTiers = [10000, 20000, 30000];
+    if (!validTiers.includes(parseInt(tier))) {
+      alert('Invalid tier amount. Please select a valid tier.');
+      return;
+    }
+
+    const weeklyInterest = tier * tierInterestRates[tier];
+    const totalWithdrawal = parseFloat(tier) + weeklyInterest;
+
+    const newStudent = {
+      name,
+      tier: parseInt(tier),
+      weeklyInterest: weeklyInterest.toFixed(2),
+      totalWithdrawal: totalWithdrawal.toFixed(2),
+    };
+
+    setStudents([...students, newStudent]);
+    setName('');
+    setTier('');
   };
 
   const totalSavings = students.reduce((total, student) => total + student.tier, 0);
