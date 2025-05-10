@@ -14,26 +14,33 @@ export default function Home() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!name || !tier) {
-      alert('Please fill in all fields.');
-      return;
-    }
+  if (!name || !tier) {
+    alert('Please fill in all fields.');
+    return;
+  }
 
-    const weeklyInterest = tier * tierInterestRates[tier];
-    const totalWithdrawal = parseFloat(tier) + weeklyInterest;
+  // Validate the selected tier
+  const validTiers = [10000, 20000, 30000];
+  if (!validTiers.includes(parseInt(tier))) {
+    alert('Invalid tier amount. Please select a valid tier.');
+    return;
+  }
 
-    const newStudent = {
-      name,
-      tier: parseInt(tier),
-      weeklyInterest: weeklyInterest.toFixed(2),
-      totalWithdrawal: totalWithdrawal.toFixed(2),
-    };
+  const weeklyInterest = tier * tierInterestRates[tier];
+  const totalWithdrawal = parseFloat(tier) + weeklyInterest;
 
-    setStudents([...students, newStudent]);
-    setName('');
-    setTier('');
+  const newStudent = {
+    name,
+    tier: parseInt(tier),
+    weeklyInterest: weeklyInterest.toFixed(2),
+    totalWithdrawal: totalWithdrawal.toFixed(2),
+  };
+
+  setStudents([...students, newStudent]);
+  setName('');
+  setTier('');
   };
 
   const totalSavings = students.reduce((total, student) => total + student.tier, 0);
