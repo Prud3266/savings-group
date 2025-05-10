@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import styles from './page.module.css';
+
 
 export default function Home() {
   const [students, setStudents] = useState([]);
@@ -11,6 +13,18 @@ export default function Home() {
     10000: 0.05,
     20000: 0.10,
     30000: 0.20,
+  };
+
+  const simulateWeeklyProgress = () => {
+    const updatedStudents = students.map((student) => {
+      const newTotalWithdrawal =
+        parseFloat(student.totalWithdrawal) + parseFloat(student.weeklyInterest);
+      return {
+        ...student,
+        totalWithdrawal: newTotalWithdrawal.toFixed(2),
+      };
+    });
+    setStudents(updatedStudents);
   };
 
   const handleWithdraw = (index) => {
@@ -57,6 +71,12 @@ export default function Home() {
   return (
     <div>
       <h1>Savings Group Registration</h1>
+      <div className={styles.dashboard}>
+        <h2>Savings Dashboard</h2>
+        <p><strong>Total Savings:</strong> {totalSavings} Naira</p>
+        <p><strong>Total Weekly Interest:</strong> {totalInterest.toFixed(2)} Naira</p>
+        <button onClick={simulateWeeklyProgress}>Simulate Weekly Progress</button>
+      </div>
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">Student Name:</label>
         <input
@@ -93,6 +113,8 @@ export default function Home() {
             {students.map((student, index) => (
               <li key={index}>
                 <strong>{student.name}</strong> - Tier: {student.tier} Naira, Weekly Interest: {student.weeklyInterest} Naira, Total Withdrawal: {student.totalWithdrawal} Naira
+                <button onClick={() => handleWithdraw(index)}>Withdraw</button>
+              
               </li>
             ))}
           </ul>
