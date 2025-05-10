@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './page.module.css';
 
 export default function Home() {
   const [students, setStudents] = useState([]);
@@ -37,10 +36,16 @@ export default function Home() {
     setTier('');
   };
 
+  const totalSavings = students.reduce((total, student) => total + student.tier, 0);
+  const totalInterest = students.reduce(
+    (total, student) => total + parseFloat(student.weeklyInterest),
+    0
+  );
+
   return (
-    <div className={styles.container}>
+    <div>
       <h1>Savings Group Registration</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="name">Student Name:</label>
         <input
           type="text"
@@ -67,7 +72,7 @@ export default function Home() {
         <button type="submit">Register</button>
       </form>
 
-      <div className={styles.output}>
+      <div>
         <h2>Registered Students</h2>
         {students.length === 0 ? (
           <p>No students registered yet.</p>
@@ -80,6 +85,12 @@ export default function Home() {
             ))}
           </ul>
         )}
+      </div>
+
+      <div>
+        <h2>Savings Dashboard</h2>
+        <p><strong>Total Savings:</strong> {totalSavings} Naira</p>
+        <p><strong>Total Weekly Interest:</strong> {totalInterest.toFixed(2)} Naira</p>
       </div>
     </div>
   );
