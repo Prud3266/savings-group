@@ -1,95 +1,86 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState } from 'react';
+import styles from './page.module.css';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [students, setStudents] = useState([]);
+  const [name, setName] = useState('');
+  const [tier, setTier] = useState('');
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const tierInterestRates = {
+    10000: 0.05,
+    20000: 0.10,
+    30000: 0.20,
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!name || !tier) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    const weeklyInterest = tier * tierInterestRates[tier];
+    const totalWithdrawal = parseFloat(tier) + weeklyInterest;
+
+    const newStudent = {
+      name,
+      tier: parseInt(tier),
+      weeklyInterest: weeklyInterest.toFixed(2),
+      totalWithdrawal: totalWithdrawal.toFixed(2),
+    };
+
+    setStudents([...students, newStudent]);
+    setName('');
+    setTier('');
+  };
+
+  return (
+    <div className={styles.container}>
+      <h1>Savings Group Registration</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label htmlFor="name">Student Name:</label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+          required
+        />
+
+        <label htmlFor="tier">Select Tier:</label>
+        <select
+          id="tier"
+          value={tier}
+          onChange={(e) => setTier(e.target.value)}
+          required
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <option value="">--Select Tier--</option>
+          <option value="10000">Tier 1 (10,000 Naira - 5% interest)</option>
+          <option value="20000">Tier 2 (20,000 Naira - 10% interest)</option>
+          <option value="30000">Tier 3 (30,000 Naira - 20% interest)</option>
+        </select>
+
+        <button type="submit">Register</button>
+      </form>
+
+      <div className={styles.output}>
+        <h2>Registered Students</h2>
+        {students.length === 0 ? (
+          <p>No students registered yet.</p>
+        ) : (
+          <ul>
+            {students.map((student, index) => (
+              <li key={index}>
+                <strong>{student.name}</strong> - Tier: {student.tier} Naira, Weekly Interest: {student.weeklyInterest} Naira, Total Withdrawal: {student.totalWithdrawal} Naira
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
